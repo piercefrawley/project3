@@ -101,7 +101,6 @@ public class DBDemo {
 		//"DROP TABLE IF EXISTS messages;" + 
 		// Create a table
 		//made changes
-		//final changes
 		try {
 			HelperFunctions HF = new HelperFunctions();
 			HF.executeUpdate(conn, "DROP TABLE IF EXISTS messages;");
