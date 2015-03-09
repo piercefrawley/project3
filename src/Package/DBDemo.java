@@ -149,9 +149,10 @@ public class DBDemo {
 			//patient
 			if(args[0].contains("1"))
 			{
-				String username = System.console().readLine("Enter Patient Username: ");
 				System.out.println("inside");
-				List<Patient> patients = HF.executeQuery(app.getConnection(), "SELECT * FROM messages WHERE UserName = "+username);
+				String userID = System.console().readLine("Enter Patient ID: ");
+				
+				List<Patient> patients = HF.executeQuery(app.getConnection(), "SELECT * FROM messages WHERE patientId = "+userID);
 				if(patients == null)
 				{
 					System.out.println("Error: Could not find patient");
@@ -159,6 +160,7 @@ public class DBDemo {
 				else
 				{
 					Patient p = patients.get(0);
+					System.out.println(p.getFamilyName());
 					//show all the fields of patient
 				}
 				
@@ -166,11 +168,15 @@ public class DBDemo {
 			//Doctor
 			else if(args[0].contains("2"))
 			{
-				
+				String doctorID = System.console().readLine("Enter Doctor ID: ");
+
 			}
 			//Admin
 			else
 			{
+				
+				String adminID = System.console().readLine("Enter Admin ID: ");
+
 				
 			}
 			
