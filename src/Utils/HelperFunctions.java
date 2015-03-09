@@ -75,7 +75,12 @@ public class HelperFunctions {
 	        	l.add(p);
 	        }
 	        return l;
-	    } finally {
+	    } catch (Exception e){
+	    	return null;
+	    
+	    }
+	    finally {
+	    
 
 	    	// This will run whether we throw an exception or not
 	        if (stmt != null) { stmt.close(); }

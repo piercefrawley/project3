@@ -146,14 +146,40 @@ public class DBDemo {
 			app.run();
 			System.out.println(args[0]);
 			HelperFunctions HF = new HelperFunctions();
-			if(args[0].contains("12345"))
+			//patient
+			if(args[0].contains("1"))
 			{
 				System.out.println("inside");
-				List<Patient> patients = HF.executeQuery(app.getConnection(), "SELECT * FROM messages WHERE patientId = "+args[0]);
-				for(Patient p : patients){
-					System.out.println(p.getFamilyName());
+				String userID = System.console().readLine("Enter Patient ID: ");
+				
+				List<Patient> patients = HF.executeQuery(app.getConnection(), "SELECT * FROM messages WHERE patientId = "+userID);
+				if(patients == null)
+				{
+					System.out.println("Error: Could not find patient");
 				}
+				else
+				{
+					Patient p = patients.get(0);
+					System.out.println(p.getFamilyName());
+					//show all the fields of patient
+				}
+				
 			}
+			//Doctor
+			else if(args[0].contains("2"))
+			{
+				String doctorID = System.console().readLine("Enter Doctor ID: ");
+
+			}
+			//Admin
+			else
+			{
+				
+				String adminID = System.console().readLine("Enter Admin ID: ");
+
+				
+			}
+			
 			}
 		}
 
