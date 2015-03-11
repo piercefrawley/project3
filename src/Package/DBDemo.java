@@ -199,7 +199,7 @@ public class DBDemo {
 				System.out.println("inside");
 				String userID = System.console().readLine("Enter Patient ID: ");
 				
-				Patient p = HF.executeQuery(app.getConnection(), "SELECT * FROM messages WHERE patientId = "+userID);
+				Patient p = HF.getPatient(app.getConnection(), userID);
 				if(p == null)
 				{
 					System.out.println("Error: Could not find patient");

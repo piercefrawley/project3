@@ -3,6 +3,7 @@ package Package;
 import java.util.Date;
 
 public class Allergy {
+	public String patientId;
 	public String allerginId;
 	public String substance;
 	public String reactionType;

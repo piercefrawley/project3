@@ -64,31 +64,6 @@ public class HelperFunctions {
 		
 		
 	}
-	
-	public Patient executeQuery(Connection conn, String command) throws SQLException {
-	
-		Statement stmt = null;
-	    try {
-	    	Patient p = null;
-	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery(command); // This will throw a SQLException if it fails
-	        while(rs.next()){
-	        	 p = new Patient(getStringHelper("patientId",rs),getStringHelper("patientrole",rs),getStringHelper("FirstName",rs),getStringHelper("GivenName",rs),getStringHelper("FamilyName",rs),getStringHelper("suffix",rs),getStringHelper("gender",rs), getDateHelper("BirthTime",rs),getStringHelper("providerId",rs),getDateHelper("xmlCreationdate",rs));
-	        
-	        }
-	        return p;
-	    } catch (Exception e){
-	    	return null;
-	    
-	    }
-	    finally {
-	    
-
-	    	// This will run whether we throw an exception or not
-	        if (stmt != null) { stmt.close(); }
-	    }
-		
-	}
 
 	public Patient getPatient(Connection conn, String pid) throws SQLException {	
 		Statement stmt = null;
@@ -116,7 +91,6 @@ public class HelperFunctions {
 	        return true;
 	    } catch (Exception e){
 	    	return false;
-	    
 	    }
 	    finally {
 	    	// This will run whether we throw an exception or not
@@ -137,7 +111,6 @@ public class HelperFunctions {
 	        return l;
 	    } catch (Exception e){
 	    	return null;
-	    
 	    }
 	    finally {
 	    	// This will run whether we throw an exception or not
@@ -157,8 +130,7 @@ public class HelperFunctions {
 	        }
 	        return l;
 	    } catch (Exception e){
-	    	return null;
-	    
+	    	return null;	    
 	    }
 	    finally {
 	    	// This will run whether we throw an exception or not
