@@ -65,18 +65,18 @@ public class HelperFunctions {
 		
 	}
 	
-	public List<Patient> executeQuery(Connection conn, String command) throws SQLException {
+	public Patient executeQuery(Connection conn, String command) throws SQLException {
 	
 		Statement stmt = null;
 	    try {
-	    	List<Patient> l = new ArrayList<Patient>();
+	    	Patient p = null;
 	        stmt = conn.createStatement();
 	        ResultSet rs = stmt.executeQuery(command); // This will throw a SQLException if it fails
 	        while(rs.next()){
-	        	Patient p = new Patient(getStringHelper("patientId",rs),getStringHelper("patientrole",rs),getStringHelper("FirstName",rs),getStringHelper("GivenName",rs),getStringHelper("FamilyName",rs),getStringHelper("suffix",rs),getStringHelper("gender",rs), getDateHelper("BirthTime",rs),getStringHelper("providerId",rs),getDateHelper("xmlCreationdate",rs));
-	        	l.add(p);
+	        	 p = new Patient(getStringHelper("patientId",rs),getStringHelper("patientrole",rs),getStringHelper("FirstName",rs),getStringHelper("GivenName",rs),getStringHelper("FamilyName",rs),getStringHelper("suffix",rs),getStringHelper("gender",rs), getDateHelper("BirthTime",rs),getStringHelper("providerId",rs),getDateHelper("xmlCreationdate",rs));
+	        
 	        }
-	        return l;
+	        return p;
 	    } catch (Exception e){
 	    	return null;
 	    

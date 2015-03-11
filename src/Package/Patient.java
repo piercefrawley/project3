@@ -3,16 +3,16 @@ package Package;
 import java.util.Date;
 
 public class Patient {
-	private String patientId;
-	private String patientrole;
-	private String FirstName;
-	private String GivenName;
-	private String FamilyName;
-	private String suffix;
-	private String gender;
-	private Date BirthTime;
-	private String providerId;
-	private Date xmlCreationdate;
+	public String patientId;
+	public String patientrole;
+	public String FirstName;
+	public String GivenName;
+	public String FamilyName;
+	public String suffix;
+	public String gender;
+	public Date BirthTime;
+	public String providerId;
+	public Date xmlCreationdate;
 	
 	public Patient(String ID, String patientrole, String firstName, String givenname, String familyname, String suffix, String gender, Date birthtime, String providerid, Date xmlCreationDate) {
 		this.patientId = ID;
