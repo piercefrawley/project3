@@ -69,7 +69,7 @@ public class HelperFunctions {
 		Statement stmt = null;
 	    try {
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM Patient P WHERE P.patientId=" + pid + ";"); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM messages P WHERE P.patientId=" + pid + ";"); // This will throw a SQLException if it fails
 	        Patient p = new Patient(pid,getStringHelper("patientrole",rs),getStringHelper("FirstName",rs),getStringHelper("GivenName",rs),getStringHelper("FamilyName",rs),getStringHelper("suffix",rs),getStringHelper("gender",rs), getDateHelper("BirthTime",rs),getStringHelper("providerId",rs),getDateHelper("xmlCreationdate",rs));
 	        return p;
 	    } catch (Exception e){
@@ -86,7 +86,7 @@ public class HelperFunctions {
 		Statement stmt = null;
 	    try {
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("UPDATE * FROM Patient P WHERE P.patientId=" + pid + ";"); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("UPDATE * FROM messages P WHERE P.patientId=" + pid + ";"); // This will throw a SQLException if it fails
 	        Patient p = new Patient(pid,getStringHelper("patientrole",rs),getStringHelper("FirstName",rs),getStringHelper("GivenName",rs),getStringHelper("FamilyName",rs),getStringHelper("suffix",rs),getStringHelper("gender",rs), getDateHelper("BirthTime",rs),getStringHelper("providerId",rs),getDateHelper("xmlCreationdate",rs));
 	        return true;
 	    } catch (Exception e){
