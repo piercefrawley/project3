@@ -1,14 +1,18 @@
 package Package;
 import Utils.HelperFunctions;
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.lang.reflect.*;
 
 /**
  * This class demonstrates how to connect to MySQL and run some basic commands.
@@ -180,8 +184,11 @@ public class DBDemo {
 		/**
 		 * Connect to the DB and do some stuff
 		 * @throws SQLException 
+		 * @throws ParseException 
+		 * @throws IllegalAccessException 
+		 * @throws IllegalArgumentException 
 		 */
-		public static void main(String[] args) throws SQLException {
+		public static void main(String[] args) throws SQLException, ParseException, IllegalArgumentException, IllegalAccessException {
 			DBDemo app = new DBDemo();
 			app.run();
 			System.out.println(args[0]);
@@ -192,24 +199,104 @@ public class DBDemo {
 				System.out.println("inside");
 				String userID = System.console().readLine("Enter Patient ID: ");
 				
-				List<Patient> patients = HF.executeQuery(app.getConnection(), "SELECT * FROM messages WHERE patientId = "+userID);
-				if(patients == null)
+				Patient p = HF.executeQuery(app.getConnection(), "SELECT * FROM messages WHERE patientId = "+userID);
+				if(p == null)
 				{
 					System.out.println("Error: Could not find patient");
 				}
 				else
 				{
-					Patient p = patients.get(0);
-					System.out.println(p.getFamilyName());
+					
+					System.out.println("Hi " + p.getFirstName() +", Would you like to edit? (yes/no) ");
+					String edit = System.console().readLine();
+					while(!(edit.contentEquals("yes") || edit.contentEquals("no")))
+						edit = System.console().readLine("(Incorrect Response) Hi " + p.getFirstName() +", Would you like to edit? (yes/no) ");
+					if(edit.contentEquals("yes"))
+					{
+						Field[] fields = p.getClass().getDeclaredFields();
+						for(Field f: fields)
+						{
+							System.out.println(f.getName() +": " + f.get(p));
+						}
+						SimpleDateFormat formatter = new SimpleDateFormat("M/d/yyyy");
+						System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead): ");
+						String stringOfChanges = System.console().readLine();
+						String[] arrayOfChanges = stringOfChanges.split(" ");
+						for(String s : arrayOfChanges)
+						{
+							String[] input = s.split("/");
+							switch(input[0])
+							{
+								case "FirstName": 
+									p.setFirstName(input[1]);
+									break;
+								case "patientrole":
+									p.setPatientrole(input[1]);
+									break;
+								case "GivenName":
+									p.setGivenName(input[0]);
+									break;
+								case "FamilyName":
+									p.setFamilyName(input[0]);
+									break;
+								case "suffix":
+									p.setSuffix(input[0]);
+									break;
+								case "gender":
+									p.setGender(input[0]);
+									break;
+								case "BirthTime":
+									p.setBirthTime(formatter.parse(input[0]));
+									break;
+								case "providerId":
+									p.setProviderId(input[0]);
+									break;
+								case "xmlCreationdate":
+									p.setXmlCreationdate(formatter.parse(input[0]));
+									break;
+								default:
+									break;
+							}
+						}
+						//
+					}
 					//show all the fields of patient
 				}
 				
 			}
-			//Doctor
+			//Doctor and Author
 			else if(args[0].contains("2"))
 			{
-				String doctorID = System.console().readLine("Enter Doctor ID: ");
-
+				//String doctorID = System.console().readLine("Enter Doctor or Author ID: ");
+				//TODO: show all the patients
+				String pID = System.console().readLine("Which patient do you want to view or edit (Enter patientId)?");
+				//TODO:  Show that patient's info
+				String editOrView  = System.console().readLine("Would you like to edit the patient's info or view his/her Plan and Allergin (edit/view)?");
+				while(!(editOrView.contentEquals("edit") || editOrView.contentEquals("view")))
+					editOrView  = System.console().readLine("Would you like to edit the patient's info or view his/her Plan and Allergin (edit/view)?");
+				if(editOrView.contentEquals("view"))
+				{
+					//use the patientID to view the Allergin and Plan
+					String edit = System.console().readLine("Edit Allergin or Plan (yes/no)");
+					while(!(edit.contentEquals("yes") || edit.contentEquals("no")))
+						edit  = System.console().readLine("Edit Allergin or Plan (yes/no)");
+					
+					if(edit.contentEquals("yes"))
+					{
+						System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead): ");
+						String stringOfChanges = System.console().readLine();
+						String[] arrayOfChanges = stringOfChanges.split(" ");
+					}
+					else
+					{
+						
+					}
+				}
+				else
+				{
+					//edit the patients info
+				}
+				
 			}
 			//Admin
 			else
