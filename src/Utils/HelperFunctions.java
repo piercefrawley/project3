@@ -68,11 +68,18 @@ public class HelperFunctions {
 	public Patient getPatient(Connection conn, String pid) throws SQLException {	
 		Statement stmt = null;
 	    try {
+	    	
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM Patient P WHERE P.patientId=" + pid + ";"); // This will throw a SQLException if it fails
-	        Patient p = new Patient(pid,getStringHelper("patientrole",rs),getStringHelper("FirstName",rs),getStringHelper("GivenName",rs),getStringHelper("FamilyName",rs),getStringHelper("suffix",rs),getStringHelper("gender",rs), getDateHelper("BirthTime",rs),getStringHelper("providerId",rs),getDateHelper("xmlCreationdate",rs));
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM messages WHERE patientId = " + pid); // This will throw a SQLException if it fails
+	        //ResultSet rs = stmt.executeQuery("SELECT * FROM messages WHERE patientId = '12345'"); // This will throw a SQLException if it fails
+	        Patient p = null;
+	        while(rs.next())
+	        	 p = new Patient(pid,getStringHelper("patientrole",rs),getStringHelper("FirstName",rs),getStringHelper("GivenName",rs),getStringHelper("FamilyName",rs),getStringHelper("suffix",rs),getStringHelper("gender",rs), getDateHelper("BirthTime",rs),getStringHelper("providerId",rs),getDateHelper("xmlCreationdate",rs));
+	        
 	        return p;
 	    } catch (Exception e){
+	    	System.out.println(e);
+	    	
 	    	return null;
 	    
 	    }
