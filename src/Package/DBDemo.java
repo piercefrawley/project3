@@ -230,9 +230,11 @@ public class DBDemo {
 							System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead): ");
 							String stringOfChanges = System.console().readLine();
 							String[] arrayOfChanges = stringOfChanges.split(" ");
-							for(String s : arrayOfChanges)
+							for(String s: arrayOfChanges)
 							{
 								String[] input = s.split("/");
+								switch(input[0])
+								{
 								case "FirstName": 
 									p.setFirstName(input[1]);
 									break;
@@ -240,28 +242,29 @@ public class DBDemo {
 									p.setPatientrole(input[1]);
 									break;
 								case "GivenName":
-									p.setGivenName(input[0]);
+									p.setGivenName(input[1]);
 									break;
 								case "FamilyName":
-									p.setFamilyName(input[0]);
+									p.setFamilyName(input[1]);
 									break;
 								case "suffix":
-									p.setSuffix(input[0]);
+									p.setSuffix(input[1]);
 									break;
 								case "gender":
-									p.setGender(input[0]);
+									p.setGender(input[1]);
 									break;
 								case "BirthTime":
-									p.setBirthTime(input[0]);
+									p.setBirthTime(input[1]);
 									break;
 								case "providerId":
-									p.setProviderId(input[0]);
+									p.setProviderId(input[1]);
 									break;
 								case "xmlCreationdate":
-									p.setXmlCreationdate(input[0]);
+									p.setXmlCreationdate(input[1]);
 									break;
 								default:
 									break;
+							}
 							}
 							//
 						}
