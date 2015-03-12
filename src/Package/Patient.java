@@ -3,7 +3,6 @@ package Package;
 public class Patient {
 	public String PatientId;
 	public String PatientRole;
-	public String FirstName;
 	public String GivenName;
 	public String FamilyName;
 	public String Suffix;
@@ -35,12 +34,6 @@ public class Patient {
 	}
 	public void setPatientrole(String patientrole) {
 		this.PatientRole = patientrole;
-	}
-	public String getFirstName() {
-		return FirstName;
-	}
-	public void setFirstName(String firstName) {
-		FirstName = firstName;
 	}
 	public String getGivenName() {
 		return GivenName;
