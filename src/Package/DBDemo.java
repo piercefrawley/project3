@@ -213,14 +213,14 @@ public class DBDemo {
 							System.out.println(f.getName() +": " + f.get(p));
 						}
 						
-						System.out.println("Hi " + p.getGivenName() +", Would you like to edit? (yes/no) ");
+						System.out.println("Hi " + p.getGivenName() +", Would you like to edit? (enter: yes/no, if you want to view/edit guardian enter 'guardian') ");
 						String edit = System.console().readLine();
 						while(!(edit.contentEquals("yes") || edit.contentEquals("no") || edit.contentEquals("guardian")))
 							edit = System.console().readLine("(Incorrect Response) Hi " + p.getGivenName() +", Would you like to edit? (enter: yes/no, if you want to view/edit guardian enter 'guardian') ");
 						if(edit.contentEquals("yes"))
 						{
 							
-							SimpleDateFormat formatter = new SimpleDateFormat("M/d/yyyy");
+							
 							System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead): ");
 							String stringOfChanges = System.console().readLine();
 							String[] arrayOfChanges = stringOfChanges.split(" ");
@@ -261,10 +261,16 @@ public class DBDemo {
 							HF.updatePatient(app.getConnection(), p.PatientId, p.PatientRole, p.GivenName, p.FamilyName, p.Suffix, p.Gender, p.Birthtime, p.ProviderId, p.XMLHealth);
 							//
 						}
-						else if(edit.contentEquals("gaurdian"))
+						else if(edit.contentEquals("guardian"))
 						{
 							//lookup guardian based on PatientRole attribute
-							//p.patientrole1
+							Guardian g = HF.getGuardian(app.getConnection(),p.PatientRole);
+							Field[] fieldses = p.getClass().getDeclaredFields();
+							for(Field f: fieldses)
+							{
+								System.out.println(f.getName() +": " + f.get(p));
+							}
+							
 						}
 					}
 					
