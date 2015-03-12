@@ -292,7 +292,7 @@ public class HelperFunctions {
 	    try {
 	    	List<Patient> l = new ArrayList<Patient>();
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM PATIENT WHERE P.PatientId IN (SELECT Pl.PatientId FROM Plan Pl WHERE Pl.ProcDate = " + today); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM Patient P WHERE P.PatientId IN (SELECT Pl.PatientId FROM Plan Pl WHERE Pl.ProcDate = " + today); // This will throw a SQLException if it fails
 	        while(rs.next()){	
 	        	Patient p = new Patient(getStringHelper("PatientId", rs), getStringHelper("PatientRole", rs), getStringHelper("GivenName",rs), getStringHelper("FamilyName", rs), getStringHelper("Suffix", rs), getStringHelper("Gender", rs), getStringHelper("Birthtime", rs), getStringHelper("ProviderId", rs), getStringHelper("XMLHealth", rs));
 	        	l.add(p);
@@ -313,7 +313,7 @@ public class HelperFunctions {
 	    try {
 	    	List<Author> l = new ArrayList<Author>();
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM Author A GROUP BY PatientId HAVING COUNT(*) > 1"); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT A.PatientId FROM Author A GROUP BY PatientId HAVING COUNT(*) > 1"); // This will throw a SQLException if it fails
 	        while(rs.next()){	
 	        	Author a = new Author(getStringHelper("AuthorId", rs), getStringHelper("PatientId", rs), getStringHelper("AuthorTitle",rs), getStringHelper("AuthorFirstName", rs), getStringHelper("AuthorLastName", rs), getStringHelper("ParticipatingRole", rs));
 	        	l.add(a);
