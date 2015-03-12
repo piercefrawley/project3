@@ -193,40 +193,46 @@ public class DBDemo {
 			app.run();
 			System.out.println(args[0]);
 			HelperFunctions HF = new HelperFunctions();
-			//patient
+			//patient TODO: add gaurdian
 			if(args[0].contains("1"))
 			{
 				System.out.println("inside");
-				String userID = System.console().readLine("Enter Patient ID: ");
-				
-				Patient p = HF.getPatient(app.getConnection(), userID);
-				if(p == null)
+				String pOrG = System.console().readLine("patient or gaurdian?");
+				while (!(pOrG.contentEquals("patient") || pOrG.contentEquals("gaurdian")))
 				{
-					System.out.println("Error: Could not find patient");
+					pOrG = System.console().readLine("patient or gaurdian?");
 				}
-				else
+				
+				if(pOrG.contentEquals("patient"))
 				{
+					String userID = System.console().readLine("Enter Patient ID: ");
 					
-					System.out.println("Hi " + p.getFirstName() +", Would you like to edit? (yes/no) ");
-					String edit = System.console().readLine();
-					while(!(edit.contentEquals("yes") || edit.contentEquals("no")))
-						edit = System.console().readLine("(Incorrect Response) Hi " + p.getFirstName() +", Would you like to edit? (yes/no) ");
-					if(edit.contentEquals("yes"))
+					Patient p = HF.getPatient(app.getConnection(), userID);
+					if(p == null)
 					{
-						Field[] fields = p.getClass().getDeclaredFields();
-						for(Field f: fields)
+						System.out.println("Error: Could not find patient");
+					}
+					else
+					{
+						
+						System.out.println("Hi " + p.getFirstName() +", Would you like to edit? (yes/no) ");
+						String edit = System.console().readLine();
+						while(!(edit.contentEquals("yes") || edit.contentEquals("no") || edit.contentEquals("guardian")))
+							edit = System.console().readLine("(Incorrect Response) Hi " + p.getFirstName() +", Would you like to edit? (enter: yes/no, if you want to view/edit guardian enter 'guardian') ");
+						if(edit.contentEquals("yes"))
 						{
-							System.out.println(f.getName() +": " + f.get(p));
-						}
-						SimpleDateFormat formatter = new SimpleDateFormat("M/d/yyyy");
-						System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead): ");
-						String stringOfChanges = System.console().readLine();
-						String[] arrayOfChanges = stringOfChanges.split(" ");
-						for(String s : arrayOfChanges)
-						{
-							String[] input = s.split("/");
-							switch(input[0])
+							Field[] fields = p.getClass().getDeclaredFields();
+							for(Field f: fields)
 							{
+								System.out.println(f.getName() +": " + f.get(p));
+							}
+							SimpleDateFormat formatter = new SimpleDateFormat("M/d/yyyy");
+							System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead): ");
+							String stringOfChanges = System.console().readLine();
+							String[] arrayOfChanges = stringOfChanges.split(" ");
+							for(String s : arrayOfChanges)
+							{
+								String[] input = s.split("/");
 								case "FirstName": 
 									p.setFirstName(input[1]);
 									break;
@@ -257,11 +263,16 @@ public class DBDemo {
 								default:
 									break;
 							}
+							//
 						}
-						//
+						else if(edit.contentEquals("gaurdian"))
+						{
+							//lookup guardian based on PatientRole attribute
+							//p.patientrole
+						}
 					}
-					//show all the fields of patient
-				}
+					
+					}
 				
 			}
 			//Doctor and Author
