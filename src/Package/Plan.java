@@ -2,11 +2,13 @@ package Package;
 
 public class Plan {
 	public String PatientId;
+	public String PlanId;
 	public String Description;
 	public String ProcDate;
 	
-	public Plan(String pid, String desc, String procDate) {
+	public Plan(String pid, String planid, String desc, String procDate) {
 	this.PatientId = pid;
+	this.PlanId = planid;
 	this.Description = desc;
 	this.ProcDate = procDate;
 	}

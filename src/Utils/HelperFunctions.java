@@ -90,7 +90,7 @@ public class HelperFunctions {
 		Statement stmt = null;
 	    try {
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM Guardian G WHERE G.GuardianNo = ?" + role); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM Guardian G WHERE G.GuardianNo = " + role); // This will throw a SQLException if it fails
 	        Guardian g = null;
 	        while(rs.next())
 	        	g = new Guardian(role, getStringHelper("GivenName",rs), getStringHelper("FamilyName",rs), getStringHelper("Phone",rs), getStringHelper("Address",rs), getStringHelper("City",rs), getStringHelper("State",rs), getStringHelper("Zip",rs)); 

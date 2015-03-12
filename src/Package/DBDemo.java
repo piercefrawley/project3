@@ -264,18 +264,70 @@ public class DBDemo {
 						else if(edit.contentEquals("guardian"))
 						{
 							//lookup guardian based on PatientRole attribute
+							if(p.PatientRole == null)
+							{
+								System.out.println("no guardian for that patient");
+							}
 							Guardian g = HF.getGuardian(app.getConnection(),p.PatientRole);
-							Field[] fieldses = p.getClass().getDeclaredFields();
+							Field[] fieldses = g.getClass().getDeclaredFields();
 							for(Field f: fieldses)
 							{
-								System.out.println(f.getName() +": " + f.get(p));
+								System.out.println(f.getName() +": " + f.get(g));
 							}
+							
+							
+							//edit guardian
+							System.out.println("Hi " + p.GivenName +", " + g.GivenName +" is your guardian, Would you like to edit? (enter: yes/no) ");
+							String editt = System.console().readLine();
+							while(!(editt.contentEquals("yes") || editt.contentEquals("no") ))
+								editt = System.console().readLine("(Incorrect Response) Hi " + p.GivenName +", " + g.GivenName +" is your guardian,, Would you like to edit? (enter: yes/no) ");
+							if(editt.contentEquals("yes"))
+							{
+									
+								System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead): ");
+								String stringOfChanges = System.console().readLine();
+								String[] arrayOfChanges = stringOfChanges.split(" ");
+								for(String s: arrayOfChanges)
+								{
+									String[] input = s.split("/");
+									switch(input[0])
+									{
+							
+									
+									case "GivenName":
+										g.GivenName = input[1];
+										break;
+									case "FamilyName":
+										g.FamilyName = input[1];
+										break;
+									case "Phone":
+										g.Phone = input[1];
+										break;
+									case "Address":
+										g.Address = input[1];
+										break;
+									case "City":
+										g.City = input[1];
+										break;
+									case "State":
+										g.State = input[1];
+										break;
+									case "Zip":
+										g.Zip = input[1];
+										break;
+									default:
+										break;
+								}
+								}
+								HF.updateGuardian(app.getConnection(), g.GuardianNo, g.GivenName, g.FamilyName, g.Phone, g.Address, g.City, g.State, g.Zip);
+								
 							
 						}
 					}
 					
 					
 				
+			}
 			}
 			//Doctor and Author
 			else if(args[0].contains("2"))
@@ -284,12 +336,54 @@ public class DBDemo {
 				//TODO: show all the patients
 				String pID = System.console().readLine("Which patient do you want to view or edit (Enter patientId)?");
 				//TODO:  Show that patient's info
-				String editOrView  = System.console().readLine("Would you like to edit the patient's info or view his/her Plan and Allergin (edit/view)?");
+				
+				Patient p = HF.getPatient(app.getConnection(), pID);
+				if(p == null)
+				{
+					System.out.println("Error: Could not find patient");
+				}
+				else
+				{
+					Field[] fields = p.getClass().getDeclaredFields();
+					for(Field f: fields)
+					{
+						System.out.println(f.getName() +": " + f.get(p));
+					}
+				}
+				
+				String editOrView  = System.console().readLine("\nWould you like to edit the patient's info or view his/her Plan and Allergin (edit/view)?");
 				while(!(editOrView.contentEquals("edit") || editOrView.contentEquals("view")))
-					editOrView  = System.console().readLine("Would you like to edit the patient's info or view his/her Plan and Allergin (edit/view)?");
+					editOrView  = System.console().readLine("Would you like to edit the patient's info or view(edit) his/her Plan and Allergin (edit/view(edit))?");
 				if(editOrView.contentEquals("view"))
 				{
-					//use the patientID to view the Allergin and Plan
+					//TODO: use the patientID to view the Allergin and Plan
+					List<Allergy> listOfAllergy = HF.getAllergy(app.getConnection(), p.PatientId);
+					//iterate through each allergy and print out their info
+					for(Allergy a : listOfAllergy)
+					{
+						
+						Field[] fields = a.getClass().getDeclaredFields();
+						for(Field f: fields)
+						{
+							System.out.println(f.getName() +": " + f.get(a));
+						}
+						System.out.println();
+					}
+					
+					List<Plan> listOfPlan= HF.getPlan(app.getConnection(), p.PatientId);
+					//iterate through each plan and print out their info
+					for(Plan plan : listOfPlan)
+					{
+						Field[] fields = plan.getClass().getDeclaredFields();
+						for(Field f: fields)
+						{
+							System.out.println(f.getName() +": " + f.get(plan));
+						}
+						System.out.println();
+					}
+					
+					
+					//edit Allergin and Plan
 					String edit = System.console().readLine("Edit Allergin or Plan (yes/no)");
 					while(!(edit.contentEquals("yes") || edit.contentEquals("no")))
 						edit  = System.console().readLine("Edit Allergin or Plan (yes/no)");
@@ -307,8 +401,49 @@ public class DBDemo {
 				}
 				else
 				{
-					//edit the patients info
+					
+					System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead): ");
+					String stringOfChanges = System.console().readLine();
+					String[] arrayOfChanges = stringOfChanges.split(" ");
+					for(String s: arrayOfChanges)
+					{
+						String[] input = s.split("/");
+						switch(input[0])
+						{
+				
+						case "PatientRole":
+							p.setPatientrole(input[1]);
+							break;
+						case "GivenName":
+							p.setGivenName(input[1]);
+							break;
+						case "FamilyName":
+							p.setFamilyName(input[1]);
+							break;
+						case "Suffix":
+							p.setSuffix(input[1]);
+							break;
+						case "Gender":
+							p.setGender(input[1]);
+							break;
+						case "BirthTime":
+							p.setBirthTime(input[1]);
+							break;
+						case "ProviderId":
+							p.setProviderId(input[1]);
+							break;
+						case "XMLHealth":
+							p.setXmlCreationdate(input[1]);
+							break;
+						default:
+							break;
+					}
+					}
+					HF.updatePatient(app.getConnection(), p.PatientId, p.PatientRole, p.GivenName, p.FamilyName, p.Suffix, p.Gender, p.Birthtime, p.ProviderId, p.XMLHealth);
+					//
+				
 				}
+				
 				
 			}
 			//Admin
