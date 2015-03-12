@@ -237,7 +237,7 @@ public class HelperFunctions {
 	    try {
 	    	List<Allergy> l = new ArrayList<Allergy>();
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM Allergy A WHERE A.AllerginId=" + pid + ";"); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM Allergin A WHERE A.AllerginId=" + pid + ";"); // This will throw a SQLException if it fails
 	        while(rs.next()){	
 	        	Allergy a = new Allergy(pid, getStringHelper("AllerginId", rs), getStringHelper("Substance",rs), getStringHelper("ReactionType",rs), getStringHelper("Status", rs));
 	        	l.add(a);

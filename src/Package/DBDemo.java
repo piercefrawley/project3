@@ -64,7 +64,7 @@ public class DBDemo {
 	private final int portNumber = 3306;
 
 	/** The name of the database we are testing with (this default is installed with MySQL) */
-	private final String dbName = "healthmessagesexchange3";
+	private final String dbName = "healthmessagesexchange4";
 	
 	/** The name of the table we are testing with */
 	private final String tableName = "JDBC_TEST";
