@@ -66,8 +66,7 @@ public class HelperFunctions {
 
 	public Patient getPatient(Connection conn, String pid) throws SQLException {	
 		Statement stmt = null;
-	    try {
-	    	
+	    try {	
 	        stmt = conn.createStatement();
 	        ResultSet rs = stmt.executeQuery("SELECT * FROM patient WHERE patientId = " + pid); // This will throw a SQLException if it fails
 	        Patient p = null;
@@ -90,7 +89,6 @@ public class HelperFunctions {
 	public Guardian getGuardian(Connection conn, String role) throws SQLException {	
 		Statement stmt = null;
 	    try {
-	    	
 	        stmt = conn.createStatement();
 	        ResultSet rs = stmt.executeQuery("SELECT * FROM Guardian G WHERE G.GuardianNo = " + role); // This will throw a SQLException if it fails
 	        Guardian g = null;
@@ -111,16 +109,18 @@ public class HelperFunctions {
 	}
 	
 	public Boolean updateAllergy(Connection conn, String pid, String reactiontype, String aid, String substance) throws SQLException {	
-		Statement stmt = null;
+		java.sql.PreparedStatement stmt = null;
 	    try {
-	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("UPDATE Allergy A SET " + 
-									        "A.ReactionType=" + reactiontype + ", " +
-									        "A.AllerginId=" + aid + ", " + 
-									        "A.Substance=" + substance + 
-									        "WHERE A.PatientId=" + pid); // This will throw a SQLException if it fails
+	        stmt = conn.prepareStatement("UPDATE Allergy A SET A.ReactionType=?, A.AllerginId=?, A.Substance=? WHERE A.PatientId= ?"); // This will throw a SQLException if it fails
+	        stmt.setString(1,reactiontype);
+	        stmt.setString(2,aid);
+	        stmt.setString(3,substance);
+	        int rs = stmt.executeUpdate(); // This will throw a SQLException if it fails
+	        System.out.println(rs);
+	        conn.close();
 	        return true;
 	    } catch (Exception e){
+	    	System.out.println(e);
 	    	return false;
 	    }
 	    finally {
@@ -130,15 +130,17 @@ public class HelperFunctions {
 	}
 	
 	public Boolean updatePlan(Connection conn, String pid, String procdate, String desc) throws SQLException {	
-		Statement stmt = null;
+		java.sql.PreparedStatement stmt = null;
 	    try {
-	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("UPDATE Plan P SET" +
-									        "P.ProcDate=" + procdate + ", " +
-									        "P.Desc=" + desc + 
-									        "WHERE P.PatientId=" + pid); // This will throw a SQLException if it fails
+	        stmt = conn.prepareStatement("UPDATE Plan P SET P.ProcDate=?, P.Desc=? WHERE P.PatientId = ?"); // This will throw a SQLException if it fails
+	        stmt.setString(1,procdate);
+	        stmt.setString(2,desc);
+	        int rs = stmt.executeUpdate(); // This will throw a SQLException if it fails
+	        System.out.println(rs);
+	        conn.close();
 	        return true;
 	    } catch (Exception e){
+	    	System.out.println(e);
 	    	return false;
 	    }
 	    finally {
