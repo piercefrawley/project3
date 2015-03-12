@@ -246,13 +246,13 @@ public class DBDemo {
 									p.setGender(input[0]);
 									break;
 								case "BirthTime":
-									p.setBirthTime(formatter.parse(input[0]));
+									p.setBirthTime(input[0]);
 									break;
 								case "providerId":
 									p.setProviderId(input[0]);
 									break;
 								case "xmlCreationdate":
-									p.setXmlCreationdate(formatter.parse(input[0]));
+									p.setXmlCreationdate(input[0]);
 									break;
 								default:
 									break;

@@ -1,6 +1,7 @@
 package Utils;
 
 import Package.Allergy;
+import Package.Guardian;
 import Package.Patient;
 import Package.Plan;
 
@@ -44,9 +45,7 @@ public class HelperFunctions {
 		catch(Exception e)
 		{
 			return null;
-		}
-		
-		
+		}	
 	}
 	
 	public Date getDateHelper(String attribute, ResultSet rs)
@@ -60,9 +59,7 @@ public class HelperFunctions {
 		catch(Exception e)
 		{
 			return null;
-		}
-		
-		
+		}	
 	}
 
 	public Patient getPatient(Connection conn, String pid) throws SQLException {	
@@ -71,11 +68,10 @@ public class HelperFunctions {
 	    	
 	        stmt = conn.createStatement();
 	        ResultSet rs = stmt.executeQuery("SELECT * FROM messages WHERE patientId = " + pid); // This will throw a SQLException if it fails
-	        //ResultSet rs = stmt.executeQuery("SELECT * FROM messages WHERE patientId = '12345'"); // This will throw a SQLException if it fails
 	        Patient p = null;
 	        while(rs.next())
-	        	 p = new Patient(pid,getStringHelper("patientrole",rs),getStringHelper("FirstName",rs),getStringHelper("GivenName",rs),getStringHelper("FamilyName",rs),getStringHelper("suffix",rs),getStringHelper("gender",rs), getDateHelper("BirthTime",rs),getStringHelper("providerId",rs),getDateHelper("xmlCreationdate",rs));
-	        
+	        	p = new Patient(pid,getStringHelper("patientrole",rs),getStringHelper("GivenName",rs),getStringHelper("FamilyName",rs),getStringHelper("Suffix",rs),getStringHelper("Gender",rs), getStringHelper("Birthtime",rs),getStringHelper("ProviderId",rs),getStringHelper("XMLHealth",rs));
+	      
 	        return p;
 	    } catch (Exception e){
 	    	System.out.println(e);
@@ -88,13 +84,60 @@ public class HelperFunctions {
 	        if (stmt != null) { stmt.close(); }
 	    }	
 	}
+
+	public Guardian getGuardian(Connection conn, String role) throws SQLException {	
+		Statement stmt = null;
+	    try {
+	    	
+	        stmt = conn.createStatement();
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM Guardian G WHERE G.GuardianNo = " + role); // This will throw a SQLException if it fails
+	        Guardian g = null;
+	        while(rs.next())
+	        	g = new Guardian(role, getStringHelper("GivenName",rs), getStringHelper("FamilyName",rs), getStringHelper("Phone",rs), getStringHelper("Address",rs), getStringHelper("City",rs), getStringHelper("State",rs), getStringHelper("Zip",rs)); 
+	      
+	        return g;
+	    } catch (Exception e){
+	    	System.out.println(e);
+	    	
+	    	return null;
+	    
+	    }
+	    finally {
+	    	// This will run whether we throw an exception or not
+	        if (stmt != null) { stmt.close(); }
+	    }	
+	}
 	
-	public Boolean updatePatient(Connection conn, String pid, List<String> attributes) throws SQLException {	
+	public Boolean updatePlan(Connection conn, String pid, String procdate, String desc) throws SQLException {	
 		Statement stmt = null;
 	    try {
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("UPDATE * FROM messages P WHERE P.patientId=" + pid + ";"); // This will throw a SQLException if it fails
-	        Patient p = new Patient(pid,getStringHelper("patientrole",rs),getStringHelper("FirstName",rs),getStringHelper("GivenName",rs),getStringHelper("FamilyName",rs),getStringHelper("suffix",rs),getStringHelper("gender",rs), getDateHelper("BirthTime",rs),getStringHelper("providerId",rs),getDateHelper("xmlCreationdate",rs));
+	        ResultSet rs = stmt.executeQuery("UPDATE * FROM Plan P WHERE P.PatientId=" + pid + " SET " + 
+									        "P.ProcDate=" + procdate + "," +
+									        "P.Desc=" + desc + ";"); // This will throw a SQLException if it fails
+	        return true;
+	    } catch (Exception e){
+	    	return false;
+	    }
+	    finally {
+	    	// This will run whether we throw an exception or not
+	        if (stmt != null) { stmt.close(); }
+	    }	
+	}
+	
+	public Boolean updatePatient(Connection conn, String pid, String role, String name, String famname, String suffix, String gender, String birthtime, String provId, String xmlHealth) throws SQLException {	
+		Statement stmt = null;
+	    try {
+	        stmt = conn.createStatement();
+	        ResultSet rs = stmt.executeQuery("UPDATE * FROM Patient P WHERE P.patientId=" + pid + " SET " + 
+									        "P.PatientRole=" + role + "," +
+									        "P.GivenName=" + name + "," +
+									        "P.FamilyName=" + famname + "," +
+									        "P.Suffix=" + suffix + "," +
+									        "P.Gender=" + gender + "," +
+									        "P.BirthTime=" + birthtime + "," +
+									        "P.ProviderID=" + provId + "," +
+									        "P.XMLHealth=" + xmlHealth + ";"); // This will throw a SQLException if it fails
 	        return true;
 	    } catch (Exception e){
 	    	return false;
@@ -110,9 +153,9 @@ public class HelperFunctions {
 	    try {
 	    	List<Plan> l = new ArrayList<Plan>();
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT P.description, P.procedureDate FROM Plan P WHERE P.patientId=" + pid + ";"); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT P.Description, P.ProcedureDate FROM Plan P WHERE P.PatientId=" + pid + ";"); // This will throw a SQLException if it fails
 	        while(rs.next()){
-	        	Plan p = new Plan(getStringHelper("patientId", rs), getStringHelper("description",rs), getDateHelper("procedureDate",rs));
+	        	Plan p = new Plan(pid, getStringHelper("Description",rs), getStringHelper("ProcedureDate",rs));
 	        	l.add(p);
 	        }
 	        return l;
@@ -130,9 +173,9 @@ public class HelperFunctions {
 	    try {
 	    	List<Allergy> l = new ArrayList<Allergy>();
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM Allergy A WHERE A.allerginId=" + pid + ";"); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM Allergy A WHERE A.AllerginId=" + pid + ";"); // This will throw a SQLException if it fails
 	        while(rs.next()){	
-	        	Allergy a = new Allergy(getStringHelper("allerginId", rs), getStringHelper("substance",rs), getStringHelper("reactionType",rs), getStringHelper("status", rs));
+	        	Allergy a = new Allergy(pid, getStringHelper("AllerginId", rs), getStringHelper("Substance",rs), getStringHelper("ReactionType",rs), getStringHelper("Status", rs));
 	        	l.add(a);
 	        }
 	        return l;

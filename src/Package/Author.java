@@ -1,7 +1,5 @@
 package Package;
 
-import java.util.Date;
-
 public class Author {
 	public String AuthorId;
 	public String PatientId;

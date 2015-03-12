@@ -1,39 +1,37 @@
 package Package;
 
-import java.util.Date;
-
 public class Plan {
-	public String patientId;
-	public String description;
-	public Date procedureDate;
+	public String PatientId;
+	public String Description;
+	public String ProcDate;
 	
-	public Plan(String ID, String desc, Date procDate) {
-	this.patientId = ID;
-	this.description = desc;
-	this.procedureDate = procDate;
+	public Plan(String pid, String desc, String procDate) {
+	this.PatientId = pid;
+	this.Description = desc;
+	this.ProcDate = procDate;
 	}
 
 	public String getPatientId() {
-		return patientId;
+		return PatientId;
 	}
 
 	public void setPatientId(String patientId) {
-		this.patientId = patientId;
+		this.PatientId = patientId;
 	}
 
 	public String getDescription() {
-		return description;
+		return Description;
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		this.Description = description;
 	}
 
-	public Date getProcedureDate() {
-		return procedureDate;
+	public String getProcedureDate() {
+		return ProcDate;
 	}
 
-	public void setProcedureDate(Date procedureDate) {
-		this.procedureDate = procedureDate;
+	public void setProcedureDate(String procedureDate) {
+		this.ProcDate = procedureDate;
 	}
 }

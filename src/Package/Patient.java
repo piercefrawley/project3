@@ -1,43 +1,40 @@
 package Package;
 
-import java.util.Date;
-
 public class Patient {
-	public String patientId;
-	public String patientrole;
+	public String PatientId;
+	public String PatientRole;
 	public String FirstName;
 	public String GivenName;
 	public String FamilyName;
-	public String suffix;
-	public String gender;
-	public Date BirthTime;
-	public String providerId;
-	public Date xmlCreationdate;
+	public String Suffix;
+	public String Gender;
+	public String Birthtime;
+	public String ProviderId;
+	public String XMLHealth;
 	
-	public Patient(String ID, String patientrole, String firstName, String givenname, String familyname, String suffix, String gender, Date birthtime, String providerid, Date xmlCreationDate) {
-		this.patientId = ID;
-		this.patientrole = patientrole;
-		this.GivenName = givenname;
+	public Patient(String ID, String patientrole, String name, String familyname, String suffix, String gender, String birthtime, String providerid, String xmlHealth) {
+		this.PatientId = ID;
+		this.PatientRole = patientrole;
+		this.GivenName = name;
 		this.FamilyName = familyname;
-		this.FirstName = firstName;
-		this.suffix = suffix;
-		this.gender = gender;
-		this.BirthTime = birthtime;
-		this.providerId = providerid;
-		this.xmlCreationdate = xmlCreationDate;
+		this.Suffix = suffix;
+		this.Gender = gender;
+		this.Birthtime = birthtime;
+		this.ProviderId = providerid;
+		this.XMLHealth = xmlHealth;
 	}
 	
 	public String getPatientId() {
-		return patientId;
+		return PatientId;
 	}
 	public void setPatientId(String patientId) {
-		this.patientId = patientId;
+		this.PatientId = patientId;
 	}
 	public String getPatientrole() {
-		return patientrole;
+		return PatientRole;
 	}
 	public void setPatientrole(String patientrole) {
-		this.patientrole = patientrole;
+		this.PatientRole = patientrole;
 	}
 	public String getFirstName() {
 		return FirstName;
@@ -58,33 +55,33 @@ public class Patient {
 		FamilyName = familyName;
 	}
 	public String getSuffix() {
-		return suffix;
+		return Suffix;
 	}
 	public void setSuffix(String suffix) {
-		this.suffix = suffix;
+		this.Suffix = suffix;
 	}
 	public String getGender() {
-		return gender;
+		return Gender;
 	}
 	public void setGender(String gender) {
-		this.gender = gender;
+		this.Gender = gender;
 	}
-	public Date getBirthTime() {
-		return BirthTime;
+	public String getBirthTime() {
+		return Birthtime;
 	}
-	public void setBirthTime(Date birthTime) {
-		BirthTime = birthTime;
+	public void setBirthTime(String birthTime) {
+		Birthtime = birthTime;
 	}
 	public String getProviderId() {
-		return providerId;
+		return ProviderId;
 	}
 	public void setProviderId(String providerId) {
-		this.providerId = providerId;
+		this.ProviderId = providerId;
 	}
-	public Date getXmlCreationdate() {
-		return xmlCreationdate;
+	public String getXmlCreationdate() {
+		return XMLHealth;
 	}
-	public void setXmlCreationdate(Date xmlCreationdate) {
-		this.xmlCreationdate = xmlCreationdate;
+	public void setXmlCreationdate(String xmlCreationdate) {
+		this.XMLHealth = xmlCreationdate;
 	}
 }

@@ -1,50 +1,49 @@
 package Package;
 
-import java.util.Date;
-
 public class Allergy {
-	public String patientId;
-	public String allerginId;
-	public String substance;
-	public String reactionType;
-	public String status;
+	public String PatientId;
+	public String AllerginId;
+	public String Substance;
+	public String ReactionType;
+	public String Status;
 	
-	public Allergy(String aid, String sub, String react, String stat) {
-		this.allerginId = aid;
-		this.substance = sub;
-		this.reactionType = react;
-		this.status = stat;
+	public Allergy(String pid, String aid, String sub, String react, String stat) {
+		this.PatientId = pid;
+		this.AllerginId = aid;
+		this.Substance = sub;
+		this.ReactionType = react;
+		this.Status = stat;
 	}
 
 	public String getAllerginId() {
-		return allerginId;
+		return AllerginId;
 	}
 
 	public void setAllerginId(String allerginId) {
-		this.allerginId = allerginId;
+		this.AllerginId = allerginId;
 	}
 
 	public String getSubstance() {
-		return substance;
+		return Substance;
 	}
 
 	public void setSubstance(String substance) {
-		this.substance = substance;
+		this.Substance = substance;
 	}
 
 	public String getReactionType() {
-		return reactionType;
+		return ReactionType;
 	}
 
 	public void setReactionType(String reactionType) {
-		this.reactionType = reactionType;
+		this.ReactionType = reactionType;
 	}
 
 	public String getStatus() {
-		return status;
+		return Status;
 	}
 
 	public void setStatus(String status) {
-		this.status = status;
+		this.Status = status;
 	}
 }
