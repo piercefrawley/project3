@@ -123,7 +123,7 @@ public class HelperFunctions {
 	        stmt.setString(3,status);
 	        stmt.setString(4,aid);
 	        int rs = stmt.executeUpdate(); // This will throw a SQLException if it fails
-	        System.out.println(rs);
+	        
 	        conn.close();
 	        return true;
 	    } catch (Exception e){
@@ -145,7 +145,7 @@ public class HelperFunctions {
 	        stmt.setString(3,desc);
 	        stmt.setString(4,planId);
 	        int rs = stmt.executeUpdate(); // This will throw a SQLException if it fails
-	        System.out.println(rs);
+	       
 	        conn.close();
 	        return true;
 	    } catch (Exception e){
@@ -172,7 +172,7 @@ public class HelperFunctions {
 	        stmt.setString(7, provId);
 	        stmt.setString(8, pid);
 	        int rs = stmt.executeUpdate(); // This will throw a SQLException if it fails
-	        System.out.println(rs);
+	        
 	        conn.close();
 	        return true;
 	    } catch (Exception e){
@@ -198,7 +198,7 @@ public class HelperFunctions {
 	        stmt.setString(7, zip);
 	        stmt.setString(8, gnum);
 	        int rs = stmt.executeUpdate(); // This will throw a SQLException if it fails
-	        System.out.println(rs);
+	        
 	        conn.close();
 	        return true;
 	    } catch (Exception e){
@@ -299,11 +299,12 @@ public class HelperFunctions {
 	    Calendar cal = Calendar.getInstance();
 	    SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy");
 	    String today = sdf.format(cal.getTime());
+	    System.out.println("today's date: " +today);
 		Statement stmt = null;
 	    try {
 	    	List<Patient> l = new ArrayList<Patient>();
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM Patient P WHERE P.PatientId IN (SELECT Pl.PatientId FROM Plan Pl WHERE Pl.ProcDate = " + today+")"); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM Patient P WHERE P.PatientId IN (SELECT Pl.PatientId FROM Plan Pl WHERE Pl.ProcDate LIKE '" + today+"%')"); // This will throw a SQLException if it fails
 	        while(rs.next()){	
 	        	Patient p = new Patient(getStringHelper("PatientId", rs), getStringHelper("PatientRole", rs), getStringHelper("GivenName",rs), getStringHelper("FamilyName", rs), getStringHelper("Suffix", rs), getStringHelper("Gender", rs), getStringHelper("Birthtime", rs), getStringHelper("ProviderId", rs), getStringHelper("XMLHealth", rs));
 	        	l.add(p);

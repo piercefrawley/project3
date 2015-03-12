@@ -9,7 +9,7 @@ public class Patient {
 	public String Gender;
 	public String Birthtime;
 	public String ProviderId;
-	public String XMLHealth;
+	public String XMLCreateDate;
 	
 	public Patient(String ID, String patientrole, String name, String familyname, String suffix, String gender, String birthtime, String providerid, String xmlHealth) {
 		this.PatientId = ID;
@@ -20,7 +20,7 @@ public class Patient {
 		this.Gender = gender;
 		this.Birthtime = birthtime;
 		this.ProviderId = providerid;
-		this.XMLHealth = xmlHealth;
+		this.XMLCreateDate = xmlHealth;
 	}
 	
 	public String getPatientId() {
@@ -72,9 +72,9 @@ public class Patient {
 		this.ProviderId = providerId;
 	}
 	public String getXmlCreationdate() {
-		return XMLHealth;
+		return XMLCreateDate;
 	}
 	public void setXmlCreationdate(String xmlCreationdate) {
-		this.XMLHealth = xmlCreationdate;
+		this.XMLCreateDate = xmlCreationdate;
 	}
 }

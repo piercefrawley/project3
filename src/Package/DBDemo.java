@@ -100,10 +100,11 @@ public class DBDemo {
 		public static void main(String[] args) throws SQLException, ParseException, IllegalArgumentException, IllegalAccessException {
 			DBDemo app = new DBDemo();
 			//app.run();
-			System.out.println(args[0]);
+			
 			HelperFunctions HF = new HelperFunctions();
 			//patient TODO: add gaurdian
-			if(args[0].contains("1"))
+			String who = System.console().readLine("Are you a Patient(1)/Doctor or Author(2)/Admin(3)?");
+			if(who.contains("1"))
 			{
 				System.out.println("inside");
 			
@@ -113,6 +114,7 @@ public class DBDemo {
 					if(p == null)
 					{
 						System.out.println("Error: Could not find patient");
+						return;
 					}
 					else
 					{
@@ -130,12 +132,12 @@ public class DBDemo {
 						{
 							
 							
-							System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead): ");
+							System.out.println("\nWhich Column:Input do you want to change (if there is space in your input add %20 instead): ");
 							String stringOfChanges = System.console().readLine();
 							String[] arrayOfChanges = stringOfChanges.split(" ");
 							for(String s: arrayOfChanges)
 							{
-								String[] input = s.split("/");
+								String[] input = s.split(":");
 								input[1] = input[1].replace("%20", " ");
 								switch(input[0])
 								{
@@ -165,10 +167,11 @@ public class DBDemo {
 									p.setXmlCreationdate(input[1]);
 									break;
 								default:
+									System.out.println("Cannot edit that");
 									break;
 							}
 							}
-							HF.updatePatient(app.getConnection(), p.PatientId, p.PatientRole, p.GivenName, p.FamilyName, p.Suffix, p.Gender, p.Birthtime, p.ProviderId, p.XMLHealth);
+							HF.updatePatient(app.getConnection(), p.PatientId, p.PatientRole, p.GivenName, p.FamilyName, p.Suffix, p.Gender, p.Birthtime, p.ProviderId, p.XMLCreateDate);
 							//
 						}
 						else if(edit.contentEquals("guardian"))
@@ -194,12 +197,12 @@ public class DBDemo {
 							if(editt.contentEquals("yes"))
 							{
 									
-								System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead): ");
+								System.out.println("\nWhich Column:Input do you want to change (if there is space in your input add %20 instead): ");
 								String stringOfChanges = System.console().readLine();
 								String[] arrayOfChanges = stringOfChanges.split(" ");
 								for(String s: arrayOfChanges)
 								{
-									String[] input = s.split("/");
+									String[] input = s.split(":");
 									input[1] = input[1].replace("%20", " ");
 									switch(input[0])
 									{
@@ -227,6 +230,7 @@ public class DBDemo {
 										g.Zip = input[1];
 										break;
 									default:
+										System.out.println("Cannot edit that");
 										break;
 								}
 								}
@@ -241,7 +245,7 @@ public class DBDemo {
 			}
 			}
 			//Doctor and Author
-			else if(args[0].contains("2"))
+			else if(who.contains("2"))
 			{
 				//String doctorID = System.console().readLine("Enter Doctor or Author ID: ");
 				//TODO: show all the patients
@@ -252,6 +256,7 @@ public class DBDemo {
 				if(p == null)
 				{
 					System.out.println("Error: Could not find patient");
+					return;
 				}
 				else
 				{
@@ -296,13 +301,13 @@ public class DBDemo {
 							{
 								String index = System.console().readLine("Which Allergy do you want to edit (enter index)?");
 								Allergy a = listOfAllergy.get(Integer.parseInt(index));
-								System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead) ");
+								System.out.println("\nWhich Column:Input do you want to change (if there is space in your input add %20 instead) ");
 								String stringOfChanges = System.console().readLine();
 								String[] arrayOfChanges = stringOfChanges.split(" ");
 								
 								for(String s: arrayOfChanges)
 								{
-									String[] input = s.split("/");
+									String[] input = s.split(":");
 									input[1] = input[1].replace("%20", " ");
 									switch(input[0])
 									{
@@ -319,6 +324,7 @@ public class DBDemo {
 										a.Status = input[1];
 										break;
 									default:
+										System.out.println("Cannot edit that");
 										break;
 								}
 								}
@@ -351,13 +357,13 @@ public class DBDemo {
 								String index = System.console().readLine("Which Plan do you want to edit (enter index)?");
 								Plan a = listOfPlan.get(Integer.parseInt(index));
 								
-								System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead) ");
+								System.out.println("\nWhich Column:Input do you want to change (if there is space in your input add %20 instead) ");
 								String stringOfChanges = System.console().readLine();
 								String[] arrayOfChanges = stringOfChanges.split(" ");
 								
 								for(String s: arrayOfChanges)
 								{
-									String[] input = s.split("/");
+									String[] input = s.split(":");
 									input[1] = input[1].replace("%20", " ");
 									switch(input[0])
 									{
@@ -372,6 +378,7 @@ public class DBDemo {
 										a.ProcDate = input[1];
 										break;
 									default:
+										System.out.println("Cannot edit that");
 										break;
 								}
 								}
@@ -387,12 +394,12 @@ public class DBDemo {
 				else
 				{
 					
-					System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead): ");
+					System.out.println("\nWhich Column:Input do you want to change (if there is space in your input add %20 instead): ");
 					String stringOfChanges = System.console().readLine();
 					String[] arrayOfChanges = stringOfChanges.split(" ");
 					for(String s: arrayOfChanges)
 					{
-						String[] input = s.split("/");
+						String[] input = s.split(":");
 						input[1] = input[1].replace("%20", " ");
 						switch(input[0])
 						{
@@ -422,10 +429,11 @@ public class DBDemo {
 							p.setXmlCreationdate(input[1]);
 							break;
 						default:
+							System.out.println("Cannot edit that");
 							break;
 					}
 					}
-					HF.updatePatient(app.getConnection(), p.PatientId, p.PatientRole, p.GivenName, p.FamilyName, p.Suffix, p.Gender, p.Birthtime, p.ProviderId, p.XMLHealth);
+					HF.updatePatient(app.getConnection(), p.PatientId, p.PatientRole, p.GivenName, p.FamilyName, p.Suffix, p.Gender, p.Birthtime, p.ProviderId, p.XMLCreateDate);
 				
 				}
 				
