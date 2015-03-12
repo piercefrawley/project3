@@ -13,6 +13,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mysql.jdbc.PreparedStatement;
+
 public class HelperFunctions {
 
 	/**
@@ -67,10 +69,10 @@ public class HelperFunctions {
 	    try {
 	    	
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM messages WHERE patientId = " + pid); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM patient WHERE patientId = " + pid); // This will throw a SQLException if it fails
 	        Patient p = null;
 	        while(rs.next())
-	        	p = new Patient(pid,getStringHelper("patientrole",rs),getStringHelper("GivenName",rs),getStringHelper("FamilyName",rs),getStringHelper("Suffix",rs),getStringHelper("Gender",rs), getStringHelper("Birthtime",rs),getStringHelper("ProviderId",rs),getStringHelper("XMLHealth",rs));
+	        	p = new Patient(pid,getStringHelper("PatientRole",rs),getStringHelper("GivenName",rs),getStringHelper("FamilyName",rs),getStringHelper("Suffix",rs),getStringHelper("Gender",rs), getStringHelper("Birthtime",rs),getStringHelper("ProviderId",rs),getStringHelper("XMLHealth",rs));
 	      
 	        return p;
 	    } catch (Exception e){
@@ -146,21 +148,24 @@ public class HelperFunctions {
 	}
 	
 	public Boolean updatePatient(Connection conn, String pid, String role, String name, String famname, String suffix, String gender, String birthtime, String provId, String xmlHealth) throws SQLException {	
-		Statement stmt = null;
+		java.sql.PreparedStatement stmt = null;
 	    try {
-	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("UPDATE Patient P SET " + 
-									        "P.PatientRole=" + role + ", " +
-									        "P.GivenName=" + name + ", " +
-									        "P.FamilyName=" + famname + ", " +
-									        "P.Suffix=" + suffix + ", " +
-									        "P.Gender=" + gender + ", " +
-									        "P.BirthTime=" + birthtime + ", " +
-									        "P.ProviderID=" + provId + ", " +
-									        "P.XMLHealth=" + xmlHealth + 
-									        "WHERE P.patientId=" + pid); // This will throw a SQLException if it fails
+	        stmt =  conn.prepareStatement("UPDATE Patient P SET " + 
+			        "P.PatientRole= ?, P.GivenName= ?, P.FamilyName= ?, P.Suffix= ?, P.Gender= ?, P.Birthtime = ?, P.ProviderID = ? WHERE P.PatientId = ?" );
+	        stmt.setString(1, role);
+	        stmt.setString(2, name);
+	        stmt.setString(3, famname);
+	        stmt.setString(4, suffix);
+	        stmt.setString(5, gender);
+	        stmt.setString(6, birthtime);
+	        stmt.setString(7, provId);
+	        stmt.setString(8, pid);
+	        int rs = stmt.executeUpdate(); // This will throw a SQLException if it fails
+	        System.out.println(rs);
+	        conn.close();
 	        return true;
 	    } catch (Exception e){
+	    	System.out.println(e);
 	    	return false;
 	    }
 	    finally {
