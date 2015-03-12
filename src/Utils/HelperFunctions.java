@@ -90,7 +90,7 @@ public class HelperFunctions {
 		Statement stmt = null;
 	    try {
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM Guardian G WHERE G.GuardianNo = " + role); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM Guardian G WHERE G.GuardianNo = ?" + role); // This will throw a SQLException if it fails
 	        Guardian g = null;
 	        while(rs.next())
 	        	g = new Guardian(role, getStringHelper("GivenName",rs), getStringHelper("FamilyName",rs), getStringHelper("Phone",rs), getStringHelper("Address",rs), getStringHelper("City",rs), getStringHelper("State",rs), getStringHelper("Zip",rs)); 
@@ -115,6 +115,7 @@ public class HelperFunctions {
 	        stmt.setString(1,reactiontype);
 	        stmt.setString(2,aid);
 	        stmt.setString(3,substance);
+	        stmt.setString(4,pid);
 	        int rs = stmt.executeUpdate(); // This will throw a SQLException if it fails
 	        System.out.println(rs);
 	        conn.close();
@@ -135,6 +136,7 @@ public class HelperFunctions {
 	        stmt = conn.prepareStatement("UPDATE Plan P SET P.ProcDate=?, P.Desc=? WHERE P.PatientId = ?"); // This will throw a SQLException if it fails
 	        stmt.setString(1,procdate);
 	        stmt.setString(2,desc);
+	        stmt.setString(3,pid);
 	        int rs = stmt.executeUpdate(); // This will throw a SQLException if it fails
 	        System.out.println(rs);
 	        conn.close();
@@ -162,6 +164,32 @@ public class HelperFunctions {
 	        stmt.setString(6, birthtime);
 	        stmt.setString(7, provId);
 	        stmt.setString(8, pid);
+	        int rs = stmt.executeUpdate(); // This will throw a SQLException if it fails
+	        System.out.println(rs);
+	        conn.close();
+	        return true;
+	    } catch (Exception e){
+	    	System.out.println(e);
+	    	return false;
+	    }
+	    finally {
+	    	// This will run whether we throw an exception or not
+	        if (stmt != null) { stmt.close(); }
+	    }	
+	}
+	
+	public Boolean updateGuardian(Connection conn, String gnum, String name, String famname, String phone, String address, String city, String state, String zip) throws SQLException {	
+		java.sql.PreparedStatement stmt = null;
+	    try {
+	        stmt =  conn.prepareStatement("UPDATE Guardian G SET G.GivenName= ?, G.FamilyName= ?, G.Phone= ?, G.Address= ?, G.City = ?, G.State = ?, G.Zip = ? WHERE G.GuardianNo = ?" );
+	        stmt.setString(1, name);
+	        stmt.setString(2, famname);
+	        stmt.setString(3, phone);
+	        stmt.setString(4, address);
+	        stmt.setString(5, city);
+	        stmt.setString(6, state);
+	        stmt.setString(7, zip);
+	        stmt.setString(8, gnum);
 	        int rs = stmt.executeUpdate(); // This will throw a SQLException if it fails
 	        System.out.println(rs);
 	        conn.close();
@@ -216,7 +244,7 @@ public class HelperFunctions {
 	    }		
 	}
 	
-	public List<Patient> patientsWithAllergy(Connection conn, String aid) throws SQLException {
+	public List<Patient> patientsWithMoreThan1Allergy(Connection conn, String aid) throws SQLException {
 		Statement stmt = null;
 	    try {
 	    	List<Patient> l = new ArrayList<Patient>();
