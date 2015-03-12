@@ -108,13 +108,33 @@ public class HelperFunctions {
 	    }	
 	}
 	
+	public Boolean updateAllergy(Connection conn, String pid, String reactiontype, String aid, String substance) throws SQLException {	
+		Statement stmt = null;
+	    try {
+	        stmt = conn.createStatement();
+	        ResultSet rs = stmt.executeQuery("UPDATE Allergy A SET " + 
+									        "A.ReactionType=" + reactiontype + ", " +
+									        "A.AllerginId=" + aid + ", " + 
+									        "A.Substance=" + substance + 
+									        "WHERE A.PatientId=" + pid); // This will throw a SQLException if it fails
+	        return true;
+	    } catch (Exception e){
+	    	return false;
+	    }
+	    finally {
+	    	// This will run whether we throw an exception or not
+	        if (stmt != null) { stmt.close(); }
+	    }	
+	}
+	
 	public Boolean updatePlan(Connection conn, String pid, String procdate, String desc) throws SQLException {	
 		Statement stmt = null;
 	    try {
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("UPDATE * FROM Plan P WHERE P.PatientId=" + pid + " SET " + 
-									        "P.ProcDate=" + procdate + "," +
-									        "P.Desc=" + desc + ";"); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("UPDATE Plan P SET" +
+									        "P.ProcDate=" + procdate + ", " +
+									        "P.Desc=" + desc + 
+									        "WHERE P.PatientId=" + pid); // This will throw a SQLException if it fails
 	        return true;
 	    } catch (Exception e){
 	    	return false;
@@ -129,15 +149,16 @@ public class HelperFunctions {
 		Statement stmt = null;
 	    try {
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("UPDATE * FROM Patient P WHERE P.patientId=" + pid + " SET " + 
-									        "P.PatientRole=" + role + "," +
-									        "P.GivenName=" + name + "," +
-									        "P.FamilyName=" + famname + "," +
-									        "P.Suffix=" + suffix + "," +
-									        "P.Gender=" + gender + "," +
-									        "P.BirthTime=" + birthtime + "," +
-									        "P.ProviderID=" + provId + "," +
-									        "P.XMLHealth=" + xmlHealth + ";"); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("UPDATE Patient P SET " + 
+									        "P.PatientRole=" + role + ", " +
+									        "P.GivenName=" + name + ", " +
+									        "P.FamilyName=" + famname + ", " +
+									        "P.Suffix=" + suffix + ", " +
+									        "P.Gender=" + gender + ", " +
+									        "P.BirthTime=" + birthtime + ", " +
+									        "P.ProviderID=" + provId + ", " +
+									        "P.XMLHealth=" + xmlHealth + 
+									        "WHERE P.patientId=" + pid); // This will throw a SQLException if it fails
 	        return true;
 	    } catch (Exception e){
 	    	return false;
@@ -177,6 +198,26 @@ public class HelperFunctions {
 	        while(rs.next()){	
 	        	Allergy a = new Allergy(pid, getStringHelper("AllerginId", rs), getStringHelper("Substance",rs), getStringHelper("ReactionType",rs), getStringHelper("Status", rs));
 	        	l.add(a);
+	        }
+	        return l;
+	    } catch (Exception e){
+	    	return null;	    
+	    }
+	    finally {
+	    	// This will run whether we throw an exception or not
+	        if (stmt != null) { stmt.close(); }
+	    }		
+	}
+	
+	public List<Patient> patientsWithAllergy(Connection conn, String aid) throws SQLException {
+		Statement stmt = null;
+	    try {
+	    	List<Patient> l = new ArrayList<Patient>();
+	        stmt = conn.createStatement();
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM Allergy A WHERE A.AllerginId=" + aid + ";"); // This will throw a SQLException if it fails
+	        while(rs.next()){	
+	        	Patient p = new Patient(getStringHelper("PatientId", rs), getStringHelper("PatientRole", rs), getStringHelper("GivenName",rs), getStringHelper("FamilyName", rs), getStringHelper("Suffix", rs), getStringHelper("Gender", rs), getStringHelper("Birthtime", rs), getStringHelper("ProviderId", rs), getStringHelper("XMLHealth", rs));
+	        	l.add(p);
 	        }
 	        return l;
 	    } catch (Exception e){
