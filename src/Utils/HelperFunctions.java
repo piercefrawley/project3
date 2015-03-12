@@ -14,7 +14,9 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.mysql.jdbc.PreparedStatement;
 
@@ -111,14 +113,15 @@ public class HelperFunctions {
 	    }	
 	}
 	
-	public Boolean updateAllergy(Connection conn, String pid, String reactiontype, String aid, String substance) throws SQLException {	
+	public Boolean updateAllergy(Connection conn, String pid, String reactiontype, String aid, String substance, String status) throws SQLException {	
 		java.sql.PreparedStatement stmt = null;
 	    try {
-	        stmt = conn.prepareStatement("UPDATE Allergy A SET A.ReactionType=?, A.AllerginId=?, A.Substance=? WHERE A.PatientId= ?"); // This will throw a SQLException if it fails
+	        stmt = conn.prepareStatement("UPDATE Allergy A SET A.ReactionType=?, A.PatientId=?, A.Substance=? A.Status = ? WHERE A.AllerginID= ?"); // This will throw a SQLException if it fails
 	        stmt.setString(1,reactiontype);
-	        stmt.setString(2,aid);
+	        stmt.setString(2,pid);
 	        stmt.setString(3,substance);
-	        stmt.setString(4,pid);
+	        stmt.setString(3,status);
+	        stmt.setString(4,aid);
 	        int rs = stmt.executeUpdate(); // This will throw a SQLException if it fails
 	        System.out.println(rs);
 	        conn.close();
@@ -133,13 +136,14 @@ public class HelperFunctions {
 	    }	
 	}
 	
-	public Boolean updatePlan(Connection conn, String pid, String procdate, String desc) throws SQLException {	
+	public Boolean updatePlan(Connection conn, String patientId, String procdate, String desc, String planId) throws SQLException {	
 		java.sql.PreparedStatement stmt = null;
 	    try {
-	        stmt = conn.prepareStatement("UPDATE Plan P SET P.ProcDate=?, P.Desc=? WHERE P.PatientId = ?"); // This will throw a SQLException if it fails
-	        stmt.setString(1,procdate);
-	        stmt.setString(2,desc);
-	        stmt.setString(3,pid);
+	        stmt = conn.prepareStatement("UPDATE Plan P SET P.PatientId = ?, P.ProcDate=?, P.Description=? WHERE P.PlanId = ?"); // This will throw a SQLException if it fails
+	        stmt.setString(1,patientId);
+	        stmt.setString(2,procdate);
+	        stmt.setString(3,desc);
+	        stmt.setString(4,planId);
 	        int rs = stmt.executeUpdate(); // This will throw a SQLException if it fails
 	        System.out.println(rs);
 	        conn.close();
@@ -212,13 +216,14 @@ public class HelperFunctions {
 	    try {
 	    	List<Plan> l = new ArrayList<Plan>();
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT P.Description, P.ProcedureDate FROM Plan P WHERE P.PatientId=" + pid + ";"); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM Plan P WHERE P.PatientId=" + pid + ";"); // This will throw a SQLException if it fails
 	        while(rs.next()){
-	        	Plan p = new Plan(pid, getStringHelper("Description",rs), getStringHelper("ProcedureDate",rs));
+	        	Plan p = new Plan(pid, getStringHelper("PlanId",rs), getStringHelper("Description",rs), getStringHelper("ProcDate",rs));
 	        	l.add(p);
 	        }
 	        return l;
 	    } catch (Exception e){
+	    	System.out.println(e);
 	    	return null;
 	    }
 	    finally {
@@ -239,6 +244,7 @@ public class HelperFunctions {
 	        }
 	        return l;
 	    } catch (Exception e){
+	    	System.out.println(e);
 	    	return null;	    
 	    }
 	    finally {
@@ -247,15 +253,20 @@ public class HelperFunctions {
 	    }		
 	}
 
-	public int numPatientsWithAllergy(Connection conn, String substance) throws SQLException {
+	public HashMap<String, Integer> numPatientsWithAllergy(Connection conn) throws SQLException {
 		Statement stmt = null;
-	    try {
+	    HashMap<String, Integer> list = new HashMap<String, Integer>();
+		try {
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM Allergy A WHERE A.substance = " + substance);
-	        return rs.getInt(1);
+	        ResultSet rs = stmt.executeQuery("SELECT A.Substance, COUNT(*) as Num FROM Allergin A Group By A.Substance");
+	        while(rs.next())
+	        {
+	        	list.put(rs.getString("Substance"),rs.getInt("Num"));
+	        }
+	        return list;
 	    } catch (Exception e){
 	    	System.out.println(e);
-	    	return 0;	    
+	    	return null;	    
 	    }
 	    finally {
 	    	// This will run whether we throw an exception or not
@@ -268,7 +279,7 @@ public class HelperFunctions {
 	    try {
 	    	List<Patient> l = new ArrayList<Patient>();
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT A.PatientId FROM Allergy A GROUP BY PatientId HAVING COUNT(*) > 1"); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM patient P WHERE P.PatientId IN (SELECT A.PatientId FROM allergin A GROUP BY PatientId HAVING COUNT(*) > 1)"); // This will throw a SQLException if it fails
 	        while(rs.next()){	
 	        	Patient p = new Patient(getStringHelper("PatientId", rs), getStringHelper("PatientRole", rs), getStringHelper("GivenName",rs), getStringHelper("FamilyName", rs), getStringHelper("Suffix", rs), getStringHelper("Gender", rs), getStringHelper("Birthtime", rs), getStringHelper("ProviderId", rs), getStringHelper("XMLHealth", rs));
 	        	l.add(p);
@@ -292,7 +303,7 @@ public class HelperFunctions {
 	    try {
 	    	List<Patient> l = new ArrayList<Patient>();
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM Patient P WHERE P.PatientId IN (SELECT Pl.PatientId FROM Plan Pl WHERE Pl.ProcDate = " + today); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM Patient P WHERE P.PatientId IN (SELECT Pl.PatientId FROM Plan Pl WHERE Pl.ProcDate = " + today+")"); // This will throw a SQLException if it fails
 	        while(rs.next()){	
 	        	Patient p = new Patient(getStringHelper("PatientId", rs), getStringHelper("PatientRole", rs), getStringHelper("GivenName",rs), getStringHelper("FamilyName", rs), getStringHelper("Suffix", rs), getStringHelper("Gender", rs), getStringHelper("Birthtime", rs), getStringHelper("ProviderId", rs), getStringHelper("XMLHealth", rs));
 	        	l.add(p);
@@ -313,7 +324,7 @@ public class HelperFunctions {
 	    try {
 	    	List<Author> l = new ArrayList<Author>();
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT A.PatientId FROM Author A GROUP BY PatientId HAVING COUNT(*) > 1"); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("Select * From Author A Group By A.PatientId Having count(*) > 1"); // This will throw a SQLException if it fails
 	        while(rs.next()){	
 	        	Author a = new Author(getStringHelper("AuthorId", rs), getStringHelper("PatientId", rs), getStringHelper("AuthorTitle",rs), getStringHelper("AuthorFirstName", rs), getStringHelper("AuthorLastName", rs), getStringHelper("ParticipatingRole", rs));
 	        	l.add(a);

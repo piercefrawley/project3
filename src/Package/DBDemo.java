@@ -10,7 +10,10 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.lang.reflect.*;
 
@@ -227,6 +230,7 @@ public class DBDemo {
 							for(String s: arrayOfChanges)
 							{
 								String[] input = s.split("/");
+								input[1] = input[1].replace("%20", " ");
 								switch(input[0])
 								{
 						
@@ -290,6 +294,7 @@ public class DBDemo {
 								for(String s: arrayOfChanges)
 								{
 									String[] input = s.split("/");
+									input[1] = input[1].replace("%20", " ");
 									switch(input[0])
 									{
 							
@@ -353,49 +358,123 @@ public class DBDemo {
 				
 				String editOrView  = System.console().readLine("\nWould you like to edit the patient's info or view his/her Plan and Allergin (edit/view)?");
 				while(!(editOrView.contentEquals("edit") || editOrView.contentEquals("view")))
-					editOrView  = System.console().readLine("Would you like to edit the patient's info or view(edit) his/her Plan and Allergin (edit/view(edit))?");
+					editOrView  = System.console().readLine("Would you like to edit the patient's info or view his/her Plan and Allergin (edit/view)?");
 				if(editOrView.contentEquals("view"))
 				{
-					//TODO: use the patientID to view the Allergin and Plan
-					List<Allergy> listOfAllergy = HF.getAllergy(app.getConnection(), p.PatientId);
-					//iterate through each allergy and print out their info
-					for(Allergy a : listOfAllergy)
-					{
+					
+						String planOrAllergin = System.console().readLine("Plan or Allergin (plan/allergin)");
+						while(!(planOrAllergin.contentEquals("plan") || planOrAllergin.contentEquals("allergin")))
+						{
+							planOrAllergin = System.console().readLine("(Error Input) Plan or Allergin");
+						}
+						if(planOrAllergin.contentEquals("allergin"))
+						{
+							//TODO: use the patientID to view the Allergin and Plan
+							List<Allergy> listOfAllergy = HF.getAllergy(app.getConnection(), p.PatientId);
+							//iterate through each allergy and print out their info
+							for(Allergy a : listOfAllergy)
+							{
+								
+								Field[] fields = a.getClass().getDeclaredFields();
+								for(Field f: fields)
+								{
+									System.out.println(f.getName() +": " + f.get(a));
+								}
+								System.out.println();
+							}
+							String edit = System.console().readLine("\nEdit Allergin (yes/no)");
+							while(!(edit.contentEquals("yes") || edit.contentEquals("no")))
+								edit  = System.console().readLine("Edit Allergin (yes/no)");
+							
+							if(edit.contentEquals("yes"))
+							{
+								String index = System.console().readLine("Which Allergy do you want to edit (enter index)?");
+								Allergy a = listOfAllergy.get(Integer.parseInt(index));
+								System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead) ");
+								String stringOfChanges = System.console().readLine();
+								String[] arrayOfChanges = stringOfChanges.split(" ");
+								
+								for(String s: arrayOfChanges)
+								{
+									String[] input = s.split("/");
+									input[1] = input[1].replace("%20", " ");
+									switch(input[0])
+									{
+									case "PatientId":
+										a.PatientId = input[1];
+										break;
+									case "Substance":
+										a.Substance = input[1];
+										break;
+									case "ReactionType":
+										a.ReactionType = input[1];
+										break;
+									case "Status":
+										a.Status = input[1];
+										break;
+									default:
+										break;
+								}
+								}
+								HF.updateAllergy(app.getConnection(),a.PatientId, a.ReactionType, a.AllerginId, a.Substance, a.Status);
+								
+							
+								
+							}
+						}
+						else // plan
+						{
+							List<Plan> listOfPlan= HF.getPlan(app.getConnection(), p.PatientId);
+							//iterate through each plan and print out their info
+							for(Plan plan : listOfPlan)
+							{
+								Field[] fields = plan.getClass().getDeclaredFields();
+								for(Field f: fields)
+								{
+									System.out.println(f.getName() +": " + f.get(plan));
+								}
+								System.out.println();
+							}
+							
+							String edit = System.console().readLine("\nEdit Plan (yes/no)");
+							while(!(edit.contentEquals("yes") || edit.contentEquals("no")))
+								edit  = System.console().readLine("Edit Plan (yes/no)");
+							
+							if(edit.contentEquals("yes"))
+							{
+								String index = System.console().readLine("Which Plan do you want to edit (enter index)?");
+								Plan a = listOfPlan.get(Integer.parseInt(index));
+								
+								System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead) ");
+								String stringOfChanges = System.console().readLine();
+								String[] arrayOfChanges = stringOfChanges.split(" ");
+								
+								for(String s: arrayOfChanges)
+								{
+									String[] input = s.split("/");
+									input[1] = input[1].replace("%20", " ");
+									switch(input[0])
+									{
+												
+									case "PatientId":
+										a.PatientId = input[1];
+										break;
+									case "Description":
+										a.Description = input[1];
+										break;
+									case "ProcDate":
+										a.ProcDate = input[1];
+										break;
+									default:
+										break;
+								}
+								}
+								HF.updatePlan(app.getConnection(), a.PatientId, a.ProcDate, a.Description, a.PlanId);
+								
+							
+						}
+						//edit Allergin and Plan
 						
-						Field[] fields = a.getClass().getDeclaredFields();
-						for(Field f: fields)
-						{
-							System.out.println(f.getName() +": " + f.get(a));
-						}
-						System.out.println();
-					}
-					
-					List<Plan> listOfPlan= HF.getPlan(app.getConnection(), p.PatientId);
-					//iterate through each plan and print out their info
-					for(Plan plan : listOfPlan)
-					{
-						Field[] fields = plan.getClass().getDeclaredFields();
-						for(Field f: fields)
-						{
-							System.out.println(f.getName() +": " + f.get(plan));
-						}
-						System.out.println();
-					}
-					
-					
-					//edit Allergin and Plan
-					String edit = System.console().readLine("Edit Allergin or Plan (yes/no)");
-					while(!(edit.contentEquals("yes") || edit.contentEquals("no")))
-						edit  = System.console().readLine("Edit Allergin or Plan (yes/no)");
-					
-					if(edit.contentEquals("yes"))
-					{
-						System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead): ");
-						String stringOfChanges = System.console().readLine();
-						String[] arrayOfChanges = stringOfChanges.split(" ");
-					}
-					else
-					{
 						
 					}
 				}
@@ -408,9 +487,10 @@ public class DBDemo {
 					for(String s: arrayOfChanges)
 					{
 						String[] input = s.split("/");
+						input[1] = input[1].replace("%20", " ");
 						switch(input[0])
 						{
-				
+							
 						case "PatientRole":
 							p.setPatientrole(input[1]);
 							break;
@@ -440,19 +520,80 @@ public class DBDemo {
 					}
 					}
 					HF.updatePatient(app.getConnection(), p.PatientId, p.PatientRole, p.GivenName, p.FamilyName, p.Suffix, p.Gender, p.Birthtime, p.ProviderId, p.XMLHealth);
-					//
 				
 				}
 				
 				
 			}
+			
+		
 			//Admin
 			else
 			{
+				System.out.println("\nView number of patients for each type of allergy(1)\n"
+						+ "List the patients who have more than one allergy(2)\n"
+						+ "List the patients who have a plan for surgery today(3)\n"
+						+ "Identify authors with more than one patient(4)");
+				String input = System.console().readLine();
+				switch(input)
+				{
+				case "1":
+					
+					HashMap<String,Integer> hm = HF.numPatientsWithAllergy(app.getConnection());
+					Iterator<Entry<String,Integer>> it = hm.entrySet().iterator();
+				    while (it.hasNext()) {
+				        HashMap.Entry<String,Integer> pair = (HashMap.Entry<String,Integer>)it.next();
+				        System.out.println(pair.getKey() + " = " + pair.getValue());
+				        it.remove(); 
+				    }
+					break;
+				case "2":
+					List<Patient> list = HF.patientsWithMoreThan1Allergy(app.getConnection());
+					if(list != null){
+						for(Patient pt : list)
+						{
+							Field[] fields = pt.getClass().getDeclaredFields();
+							for(Field f: fields)
+							{
+								System.out.println(f.getName() +": " + f.get(pt));
+							}
+							System.out.println();
+						}
+					}
+					break;
+				case "3":
+					List<Patient> listt = HF.patientsSurgeryToday(app.getConnection());
+					if(listt != null)
+					{
+						for(Patient pt : listt)
+						{
+							Field[] fields = pt.getClass().getDeclaredFields();
+							for(Field f: fields)
+							{
+								System.out.println(f.getName() +": " + f.get(pt));
+							}
+							System.out.println();
+						}
+					}
+					break;
 				
-				String adminID = System.console().readLine("Enter Admin ID: ");
+				case "4":
+					List<Author> listtt = HF.authorsWithMoreThan1Patient(app.getConnection());
+					if(listtt != null)
+					{
+						for(Author pt : listtt)
+						{
+							Field[] fields = pt.getClass().getDeclaredFields();
+							for(Field f: fields)
+							{
+								System.out.println(f.getName() +": " + f.get(pt));
+							}
+							System.out.println();
+						}
+					}
+					break;
 
-				
+				}
 			}
 			
 			}
