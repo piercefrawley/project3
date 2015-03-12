@@ -197,14 +197,7 @@ public class DBDemo {
 			if(args[0].contains("1"))
 			{
 				System.out.println("inside");
-				String pOrG = System.console().readLine("patient or gaurdian?");
-				while (!(pOrG.contentEquals("patient") || pOrG.contentEquals("gaurdian")))
-				{
-					pOrG = System.console().readLine("patient or gaurdian?");
-				}
-				
-				if(pOrG.contentEquals("patient"))
-				{
+			
 					String userID = System.console().readLine("Enter Patient ID: ");
 					
 					Patient p = HF.getPatient(app.getConnection(), userID);
@@ -214,18 +207,19 @@ public class DBDemo {
 					}
 					else
 					{
+						Field[] fields = p.getClass().getDeclaredFields();
+						for(Field f: fields)
+						{
+							System.out.println(f.getName() +": " + f.get(p));
+						}
 						
-						System.out.println("Hi " + p.getFirstName() +", Would you like to edit? (yes/no) ");
+						System.out.println("Hi " + p.getGivenName() +", Would you like to edit? (yes/no) ");
 						String edit = System.console().readLine();
 						while(!(edit.contentEquals("yes") || edit.contentEquals("no") || edit.contentEquals("guardian")))
-							edit = System.console().readLine("(Incorrect Response) Hi " + p.getFirstName() +", Would you like to edit? (enter: yes/no, if you want to view/edit guardian enter 'guardian') ");
+							edit = System.console().readLine("(Incorrect Response) Hi " + p.getGivenName() +", Would you like to edit? (enter: yes/no, if you want to view/edit guardian enter 'guardian') ");
 						if(edit.contentEquals("yes"))
 						{
-							Field[] fields = p.getClass().getDeclaredFields();
-							for(Field f: fields)
-							{
-								System.out.println(f.getName() +": " + f.get(p));
-							}
+							
 							SimpleDateFormat formatter = new SimpleDateFormat("M/d/yyyy");
 							System.out.println("\nWhich Column/Input do you want to change (if there is space in your input add %20 instead): ");
 							String stringOfChanges = System.console().readLine();
@@ -235,10 +229,8 @@ public class DBDemo {
 								String[] input = s.split("/");
 								switch(input[0])
 								{
-								case "FirstName": 
-									p.setFirstName(input[1]);
-									break;
-								case "patientrole":
+						
+								case "PatientRole":
 									p.setPatientrole(input[1]);
 									break;
 								case "GivenName":
@@ -247,35 +239,36 @@ public class DBDemo {
 								case "FamilyName":
 									p.setFamilyName(input[1]);
 									break;
-								case "suffix":
+								case "Suffix":
 									p.setSuffix(input[1]);
 									break;
-								case "gender":
+								case "Gender":
 									p.setGender(input[1]);
 									break;
 								case "BirthTime":
 									p.setBirthTime(input[1]);
 									break;
-								case "providerId":
+								case "ProviderId":
 									p.setProviderId(input[1]);
 									break;
-								case "xmlCreationdate":
+								case "XMLHealth":
 									p.setXmlCreationdate(input[1]);
 									break;
 								default:
 									break;
 							}
 							}
+							HF.updatePatient(app.getConnection(), p.PatientId, p.PatientRole, p.GivenName, p.FamilyName, p.Suffix, p.Gender, p.Birthtime, p.ProviderId, p.XMLHealth);
 							//
 						}
 						else if(edit.contentEquals("gaurdian"))
 						{
 							//lookup guardian based on PatientRole attribute
-							//p.patientrole
+							//p.patientrole1
 						}
 					}
 					
-					}
+					
 				
 			}
 			//Doctor and Author
