@@ -1,6 +1,7 @@
 package Utils;
 
 import Package.Allergy;
+import Package.Author;
 import Package.Guardian;
 import Package.Patient;
 import Package.Plan;
@@ -10,7 +11,9 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.mysql.jdbc.PreparedStatement;
@@ -90,7 +93,7 @@ public class HelperFunctions {
 		Statement stmt = null;
 	    try {
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM Guardian G WHERE G.GuardianNo = ?" + role); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM Guardian G WHERE G.GuardianNo = " + role); // This will throw a SQLException if it fails
 	        Guardian g = null;
 	        while(rs.next())
 	        	g = new Guardian(role, getStringHelper("GivenName",rs), getStringHelper("FamilyName",rs), getStringHelper("Phone",rs), getStringHelper("Address",rs), getStringHelper("City",rs), getStringHelper("State",rs), getStringHelper("Zip",rs)); 
@@ -243,19 +246,81 @@ public class HelperFunctions {
 	        if (stmt != null) { stmt.close(); }
 	    }		
 	}
+
+	public int numPatientsWithAllergy(Connection conn, String substance) throws SQLException {
+		Statement stmt = null;
+	    try {
+	        stmt = conn.createStatement();
+	        ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM Allergy A WHERE A.substance = " + substance);
+	        return rs.getInt(1);
+	    } catch (Exception e){
+	    	System.out.println(e);
+	    	return 0;	    
+	    }
+	    finally {
+	    	// This will run whether we throw an exception or not
+	        if (stmt != null) { stmt.close(); }
+	    }		
+	}
 	
-	public List<Patient> patientsWithMoreThan1Allergy(Connection conn, String aid) throws SQLException {
+	public List<Patient> patientsWithMoreThan1Allergy(Connection conn) throws SQLException {
 		Statement stmt = null;
 	    try {
 	    	List<Patient> l = new ArrayList<Patient>();
 	        stmt = conn.createStatement();
-	        ResultSet rs = stmt.executeQuery("SELECT * FROM Allergy A WHERE A.AllerginId=" + aid + ";"); // This will throw a SQLException if it fails
+	        ResultSet rs = stmt.executeQuery("SELECT A.PatientId FROM Allergy A GROUP BY PatientId HAVING COUNT(*) > 1"); // This will throw a SQLException if it fails
 	        while(rs.next()){	
 	        	Patient p = new Patient(getStringHelper("PatientId", rs), getStringHelper("PatientRole", rs), getStringHelper("GivenName",rs), getStringHelper("FamilyName", rs), getStringHelper("Suffix", rs), getStringHelper("Gender", rs), getStringHelper("Birthtime", rs), getStringHelper("ProviderId", rs), getStringHelper("XMLHealth", rs));
 	        	l.add(p);
 	        }
 	        return l;
 	    } catch (Exception e){
+	    	System.out.println(e);
+	    	return null;	    
+	    }
+	    finally {
+	    	// This will run whether we throw an exception or not
+	        if (stmt != null) { stmt.close(); }
+	    }		
+	}
+	
+	public List<Patient> patientsSurgeryToday(Connection conn) throws SQLException {
+	    Calendar cal = Calendar.getInstance();
+	    SimpleDateFormat sdf = new SimpleDateFormat("M/d/yyyy");
+	    String today = sdf.format(cal.getTime());
+		Statement stmt = null;
+	    try {
+	    	List<Patient> l = new ArrayList<Patient>();
+	        stmt = conn.createStatement();
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM PATIENT WHERE P.PatientId IN (SELECT Pl.PatientId FROM Plan Pl WHERE Pl.ProcDate = " + today); // This will throw a SQLException if it fails
+	        while(rs.next()){	
+	        	Patient p = new Patient(getStringHelper("PatientId", rs), getStringHelper("PatientRole", rs), getStringHelper("GivenName",rs), getStringHelper("FamilyName", rs), getStringHelper("Suffix", rs), getStringHelper("Gender", rs), getStringHelper("Birthtime", rs), getStringHelper("ProviderId", rs), getStringHelper("XMLHealth", rs));
+	        	l.add(p);
+	        }
+	        return l;
+	    } catch (Exception e){
+	    	System.out.println(e);
+	    	return null;	    
+	    }
+	    finally {
+	    	// This will run whether we throw an exception or not
+	        if (stmt != null) { stmt.close(); }
+	    }		
+	}
+	
+	public List<Author> authorsWithMoreThan1Patient(Connection conn) throws SQLException {
+		Statement stmt = null;
+	    try {
+	    	List<Author> l = new ArrayList<Author>();
+	        stmt = conn.createStatement();
+	        ResultSet rs = stmt.executeQuery("SELECT * FROM Author A GROUP BY PatientId HAVING COUNT(*) > 1"); // This will throw a SQLException if it fails
+	        while(rs.next()){	
+	        	Author a = new Author(getStringHelper("AuthorId", rs), getStringHelper("PatientId", rs), getStringHelper("AuthorTitle",rs), getStringHelper("AuthorFirstName", rs), getStringHelper("AuthorLastName", rs), getStringHelper("ParticipatingRole", rs));
+	        	l.add(a);
+	        }
+	        return l;
+	    } catch (Exception e){
+	    	System.out.println(e);
 	    	return null;	    
 	    }
 	    finally {
